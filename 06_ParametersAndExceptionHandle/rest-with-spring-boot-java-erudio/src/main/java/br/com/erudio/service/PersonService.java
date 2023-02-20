@@ -3,12 +3,14 @@ package br.com.erudio.service;
 import br.com.erudio.controller.PersonController;
 import br.com.erudio.data.vo.v1.PersonVOV1;
 import br.com.erudio.data.vo.v2.PersonVOV2;
+import br.com.erudio.exceptions.RequiredObjectIsNullException;
 import br.com.erudio.exceptions.ResourceNotFoundException;
 import br.com.erudio.mapper.DozerMapper;
 import br.com.erudio.model.Person;
 import br.com.erudio.repository.PersonRepository;
 import br.com.erudio.util.Util;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
@@ -45,6 +47,9 @@ public class PersonService {
   
   @Transactional
   public PersonVOV1 create(PersonVOV1 personVo) {
+    if(Objects.isNull(personVo)) {
+      throw new RequiredObjectIsNullException();
+    }
     logger.info("create Person!");
     Person converterForPerson = DozerMapper.parseObject(personVo, Person.class);
     PersonVOV1 personVOV1 = DozerMapper.parseObject(personRepository.save(converterForPerson), PersonVOV1.class);
@@ -54,6 +59,9 @@ public class PersonService {
   
   @Transactional
   public PersonVOV2 createV2(PersonVOV2 personVo) {
+    if(Objects.isNull(personVo)) {
+      throw new RequiredObjectIsNullException();
+    }
     logger.info("createV2 Person!");
     Person converterForPerson = DozerMapper.parseObject(personVo, Person.class);
     return DozerMapper.parseObject(personRepository.save(converterForPerson), PersonVOV2.class);
@@ -61,6 +69,9 @@ public class PersonService {
   
   @Transactional
   public PersonVOV1 update(PersonVOV1 personVO) {
+    if(Objects.isNull(personVO)) {
+      throw new RequiredObjectIsNullException();
+    }
     logger.info("update Person!");
     Person converterForPerson = DozerMapper.parseObject(personVO, Person.class);
     Person person = personRepository.findById(converterForPerson.getId()).orElseThrow(() -> new ResourceNotFoundException("No records found for this ID"));

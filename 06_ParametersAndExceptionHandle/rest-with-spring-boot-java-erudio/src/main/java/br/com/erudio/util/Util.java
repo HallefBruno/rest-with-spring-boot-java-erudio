@@ -22,7 +22,7 @@ public class Util {
   public Double parseStr(String strNumber) {
     if(Objects.isNull(strNumber)) return 0D;
     String number = strNumber.replaceAll(",", ".");
-    if(isNumeric(number)) return Double.parseDouble(number);
+    if(isNumeric(number)) return Double.valueOf(number);
     return 0D;
   }
   

@@ -1,6 +1,7 @@
 package br.com.erudio.exceptions.handler;
 
 import br.com.erudio.exceptions.ExceptionResponse;
+import br.com.erudio.exceptions.RequiredObjectIsNullException;
 import br.com.erudio.exceptions.ResourceNotFoundException;
 import br.com.erudio.exceptions.UnsupportedMathOperationException;
 import java.time.LocalDateTime;
@@ -38,6 +39,12 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
   
   @ExceptionHandler(InvalidDataAccessApiUsageException.class)
   public final ResponseEntity<ExceptionResponse> handleInvalidDataAccessApiUsageException(Exception ex, WebRequest request) {
+    ExceptionResponse exceptionResponse = new ExceptionResponse(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
+    return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+  }
+  
+  @ExceptionHandler(RequiredObjectIsNullException.class)
+  public final ResponseEntity<ExceptionResponse> handleBadRequestException(Exception ex, WebRequest request) {
     ExceptionResponse exceptionResponse = new ExceptionResponse(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
     return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
   }
