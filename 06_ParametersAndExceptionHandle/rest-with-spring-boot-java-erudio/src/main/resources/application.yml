@@ -12,3 +12,8 @@ db-config:
   user: ${USER}
   password: ${PASSWORD}
   
+springdoc:
+  pathsToMatch: /api/**/v1/**
+  swagger-ui:
+    use-root-path: true  
+  
