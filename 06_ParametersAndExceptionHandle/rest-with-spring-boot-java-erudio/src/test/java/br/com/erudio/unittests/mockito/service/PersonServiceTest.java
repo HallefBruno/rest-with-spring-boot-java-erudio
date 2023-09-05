@@ -29,7 +29,7 @@ public class PersonServiceTest {
   MockPerson input;
 
   @InjectMocks
-  private PersonService personService;
+  PersonService personService;
 
   @Mock
   PersonRepository personRepository;
@@ -48,7 +48,7 @@ public class PersonServiceTest {
     var result = personService.findById(1L);
     assertNotNull(result);
     assertNotNull(result.getLinks());
-    assertTrue(result.toString().contains("[</person/v1/findBy/1>;rel=\"self\"]"));
+    assertTrue(result.toString().contains("[</api/person/v1/findBy/1>;rel=\"self\"]"));
     assertEquals("Addres Test1", result.getContent().getAddress());
     assertEquals("First Name Test1", result.getContent().getFirstName());
     assertEquals("Last Name Test1", result.getContent().getLastName());
@@ -62,14 +62,12 @@ public class PersonServiceTest {
     persisted.setId(1L);
 
     PersonVOV1 personVOV1 = input.mockVO(1);
-
     when(personRepository.save(entity)).thenReturn(persisted);
     var result = personService.create(personVOV1);
 
     assertNotNull(result);
     assertNotNull(result.getLinks());
-    System.out.println(result.toString());
-    assertTrue(result.toString().contains("[</person/v1/findBy/1>;rel=\"self\"]"));
+    assertTrue(result.toString().contains("[</api/person/v1/findBy/1>;rel=\"self\"]"));
     assertEquals("Addres Test1", result.getAddress());
     assertEquals("First Name Test1", result.getFirstName());
     assertEquals("Last Name Test1", result.getLastName());
@@ -94,7 +92,7 @@ public class PersonServiceTest {
     assertNotNull(result);
     assertNotNull(result.getLinks());
     System.out.println(result.toString());
-    assertTrue(result.toString().contains("[</person/v1/findBy/1>;rel=\"self\"]"));
+    assertTrue(result.toString().contains("[</api/person/v1/findBy/1>;rel=\"self\"]"));
     assertEquals("Addres Test1", result.getAddress());
     assertEquals("First Name Test1", result.getFirstName());
     assertEquals("Last Name Test1", result.getLastName());
@@ -128,7 +126,7 @@ public class PersonServiceTest {
     var person = peoples.get(0);
     assertEquals("Addres Test0", person.getAddress());
     assertEquals("First Name Test0", person.getFirstName());
-    assertTrue(person.toString().contains("[</person/v1/findBy/0>;rel=\"self\"]"));
+    assertTrue(person.toString().contains("/api/person/v1/findBy/0>;rel=\"self\""));
     
   }
   
