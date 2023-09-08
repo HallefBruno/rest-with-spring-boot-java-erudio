@@ -3,8 +3,8 @@ package br.com.erudio.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-@Component
-@ConfigurationProperties(prefix = "db-config")
+//@Component
+//@ConfigurationProperties(prefix = "db-config")
 public class DBConfig {
   
   private String url;

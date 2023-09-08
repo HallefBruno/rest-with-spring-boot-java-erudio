@@ -6,13 +6,13 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
+//@Configuration
 public class DataSourceConfig {
   
-  @Autowired
+  //@Autowired
   private DBConfig dBConfig;
   
-  @Bean
+  //@Bean
   public DataSource getDataSource() {
     DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
     dataSourceBuilder.driverClassName("org.postgresql.Driver");

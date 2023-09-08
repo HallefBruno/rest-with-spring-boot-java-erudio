@@ -18,6 +18,8 @@
   <properties>
     <java.version>19</java.version>
     <springdoc.version>2.0.2</springdoc.version>
+    <testcontainer.version>1.16.3</testcontainer.version>
+    <rest-assured.version>4.5.0</rest-assured.version>
   </properties>
   
   <dependencies>
@@ -115,6 +117,19 @@
       <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
+    
+    <dependency>
+      <groupId>io.rest-assured</groupId>
+      <artifactId>rest-assured</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>${testcontainer.version}</version>
+      <scope>test</scope>
+    </dependency>
 
   </dependencies>
 
@@ -137,9 +152,9 @@
         <groupId>org.flywaydb</groupId>
         <artifactId>flyway-maven-plugin</artifactId>
         <configuration>
-          <url>${URL_DB_PG}</url>
-          <user>${USER}</user>
-          <password>${PASSWORD}</password>
+          <url>jdbc:postgresql://localhost:5432/rest-with-spring-boot</url>
+          <user>postgres</user>
+          <password>postgres</password>
         </configuration>
         <dependencies>
           <dependency>
