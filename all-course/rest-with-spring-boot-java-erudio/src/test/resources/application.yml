@@ -14,8 +14,11 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     show-sql: false
+    
 springdoc:
   pathsToMatch: /api/**/v1/**
   swagger-ui:
     use-root-path: true
-  
+    
+cors:
+  originPatterns: http://127.0.0.1:8080,http:localhost:8080,http://localhost:3000
