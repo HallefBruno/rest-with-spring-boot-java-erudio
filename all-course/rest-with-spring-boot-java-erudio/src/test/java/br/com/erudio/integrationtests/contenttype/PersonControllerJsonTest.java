@@ -12,7 +12,6 @@ import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.specification.RequestSpecification;
-import org.junit.jupiter.api.Assertions;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,7 +34,6 @@ public class PersonControllerJsonTest extends AbstractIntegrationTest {
     public static void setUp() {
 	objectMapper = new ObjectMapper();
 	objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-	
 	personVO = new PersonVO();
     }
     
@@ -44,7 +42,7 @@ public class PersonControllerJsonTest extends AbstractIntegrationTest {
     void testCreate() throws JsonProcessingException {
 	mockPerson();
 	specification = new RequestSpecBuilder()
-	.addHeader(TestConfigs.HEADER_PARAM_ORIGIN, "http://localhost:3000")
+	.addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_VALID)
 	.setBasePath("/api/person/v1/create")
 	.setPort(TestConfigs.SERVER_PORT)
 	.addFilter(new RequestLoggingFilter(LogDetail.ALL))
@@ -61,19 +59,111 @@ public class PersonControllerJsonTest extends AbstractIntegrationTest {
 	    .extract()
 		.body()
 		    .asString();
-	PersonVO vo = objectMapper.readValue(content, PersonVO.class);
-	personVO = vo;
+	PersonVO persistedPerson = objectMapper.readValue(content, PersonVO.class);
+	personVO = persistedPerson;
 	
-	assertTrue(vo.getId() > 0);
-	assertNotNull(vo.getId());
-	assertNotNull(vo.getLastName());
-	assertNotNull(vo.getFirstName());
-	assertNotNull(vo.getAddress());
-	assertNotNull(vo.getGender());
-	assertEquals("Richard",vo.getFirstName());
-	assertEquals("Stallman",vo.getLastName());
-	assertEquals("New York City, New York, US",vo.getAddress());
-	assertEquals("male",vo.getGender());
+	assertTrue(persistedPerson.getId() > 0);
+	assertNotNull(persistedPerson.getId());
+	assertNotNull(persistedPerson.getLastName());
+	assertNotNull(persistedPerson.getFirstName());
+	assertNotNull(persistedPerson.getAddress());
+	assertNotNull(persistedPerson.getGender());
+	assertEquals("Richard",persistedPerson.getFirstName());
+	assertEquals("Stallman",persistedPerson.getLastName());
+	assertEquals("New York City, New York, US",persistedPerson.getAddress());
+	assertEquals("male",persistedPerson.getGender());
+    }
+    
+    @Test
+    @Order(2)
+    void testCreateWithWrongOring() throws JsonProcessingException {
+	mockPerson();
+	specification = new RequestSpecBuilder()
+	.addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_INVALID)
+	.setBasePath("/api/person/v1/create")
+	.setPort(TestConfigs.SERVER_PORT)
+	.addFilter(new RequestLoggingFilter(LogDetail.ALL))
+	.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
+	.build();
+	var content = given()
+	    .spec(specification)
+		.contentType(TestConfigs.CONTENT_TYPE_JSON)
+		.body(personVO)
+		.when()
+		.post()
+	    .then()
+		.statusCode(403)
+	    .extract()
+		.body()
+		    .asString();
+	
+	assertNotNull(content);
+	assertEquals("invalid cors request".toLowerCase(), content.toLowerCase());
+    }
+    
+    @Test
+    @Order(3)
+    void testFindById() throws JsonProcessingException {
+	mockPerson();
+	specification = new RequestSpecBuilder()
+	.addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_VALID)
+	.setBasePath("/api/person/v1/findBy")
+	.setPort(TestConfigs.SERVER_PORT)
+	.addFilter(new RequestLoggingFilter(LogDetail.ALL))
+	.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
+	.build();
+	var content = given()
+	    .spec(specification)
+		.contentType(TestConfigs.CONTENT_TYPE_JSON)
+		.pathParams("id", personVO.getId())
+		.when()
+		.get("{id}")
+	    .then()
+		.statusCode(200)
+	    .extract()
+		.body()
+		    .asString();
+	
+	PersonVO persistedPerson = objectMapper.readValue(content, PersonVO.class);
+	personVO = persistedPerson;
+	
+	assertTrue(persistedPerson.getId() > 0);
+	assertNotNull(persistedPerson.getId());
+	assertNotNull(persistedPerson.getLastName());
+	assertNotNull(persistedPerson.getFirstName());
+	assertNotNull(persistedPerson.getAddress());
+	assertNotNull(persistedPerson.getGender());
+	assertEquals("Richard",persistedPerson.getFirstName());
+	assertEquals("Stallman",persistedPerson.getLastName());
+	assertEquals("New York City, New York, US",persistedPerson.getAddress());
+	assertEquals("male",persistedPerson.getGender());
+    }
+    
+    @Test
+    @Order(4)
+    void testFindByIdWithWrongOring() throws JsonProcessingException {
+	mockPerson();
+	specification = new RequestSpecBuilder()
+	.addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_INVALID)
+	.setBasePath("/api/person/v1/findBy")
+	.setPort(TestConfigs.SERVER_PORT)
+	.addFilter(new RequestLoggingFilter(LogDetail.ALL))
+	.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
+	.build();
+	var content = given()
+	    .spec(specification)
+		.contentType(TestConfigs.CONTENT_TYPE_JSON)
+		.pathParams("id", personVO.getId())
+		.when()
+		.get("{id}")
+	    .then()
+		.statusCode(403)
+	    .extract()
+		.body()
+		    .asString();
+	
+	assertNotNull(content);
+	assertEquals("invalid cors request".toLowerCase(), content.toLowerCase());
     }
     
     private void mockPerson() {

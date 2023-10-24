@@ -7,6 +7,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: rest-with-spring-boot
+      POSTGRES_HOST_AUTH_METHOD: trust
     ports:
       - "15432:5432"
     volumes:
@@ -28,7 +29,7 @@ services:
       - teste-postgres-compose
     networks:
       - postgres-compose-network
-
+    tty: true
 networks: 
   postgres-compose-network:
     driver: bridge
